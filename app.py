@@ -14,6 +14,7 @@ def check_location():
     except:
         return True 
 
+
 st.set_page_config(page_title="Machen Logic Engine", page_icon="📖")
 
 st.sidebar.title("🔐 Secure Access")

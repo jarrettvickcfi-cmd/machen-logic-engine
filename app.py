@@ -16,11 +16,6 @@ def check_location():
 
 st.set_page_config(page_title="Machen Logic Engine", page_icon="📖")
 
-# 3. SECURITY GATE
-if not check_location():
-    st.error("Access Restricted: US Use Only.")
-    st.stop()
-
 st.sidebar.title("🔐 Secure Access")
 password = st.sidebar.text_input("Enter Secret Word:", type="password")
 

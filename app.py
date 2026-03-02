@@ -60,8 +60,8 @@ if target_verse:
     st.write("*'Wooden' word-for-word rendering goes here...*")
     
     st.subheader("💡 Grammatical Insights")
-    st.bullet_point("Aorist vs Present distinction...")
-    st.bullet_point("Hapax Legomenon check...")
+    st.write("* Aorist vs Present distinction...")
+    st.write("* Hapax Legomenon check...")
     
     st.subheader("🗣 Plain Conversation")
     st.success("The 'So What?' for today: This verse teaches us...")

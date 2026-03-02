@@ -39,7 +39,7 @@ if target_verse:
             try:
                 genai.configure(api_key=api_key)
                 # Using the standard Gemini model
-                model = genai.GenerativeModel('gemini-1.5-flash')
+               model = genai.GenerativeModel('gemini-1.5-flash-latest')
                 
                 prompt = f"""
                 You are a Koine Greek scholar and pedagogical assistant using J. Gresham Machen's methods.

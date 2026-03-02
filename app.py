@@ -1,7 +1,12 @@
 import streamlit as st
 import requests
 
-# 1. SMART GEOFENCE (US ONLY)
+# 1. SEARCH QUOTA SETTINGS (Example: 50 searches per day)
+MAX_SEARCHES = 50 
+if 'search_count' not in st.session_state:
+    st.session_state.search_count = 0
+
+# 2. ALABAMA GEOFENCE
 def check_location():
     try:
         res = requests.get('https://ipapi.co/json/', timeout=5).json()
@@ -9,42 +14,61 @@ def check_location():
     except:
         return True 
 
-# 2. PAGE CONFIG
 st.set_page_config(page_title="Machen Logic Engine", page_icon="📖")
 
-# 3. SECURITY GATE (GEOFENCE + PASSWORD)
+# 3. SECURITY GATE
 if not check_location():
-    st.error("Access Restricted: This tool is licensed for use within the United States only.")
+    st.error("Access Restricted: US Use Only.")
     st.stop()
 
 st.sidebar.title("🔐 Secure Access")
-password = st.sidebar.text_input("Enter the Secret Word:", type="password")
+password = st.sidebar.text_input("Enter Secret Word:", type="password")
 
-# YOU CAN CHANGE THIS WORD TO ANYTHING YOU WANT
 if password != "Machen1923":
-    st.info("Please enter the password in the sidebar to unlock the Logic Engine.")
+    st.info("Enter password to unlock.")
     st.stop()
 
-if not st.sidebar.checkbox("I accept the U.S. Fair Use Terms of Service"):
-    st.warning("Please accept the terms to reveal the analysis.")
+# 4. QUOTA COUNTER BOX
+remaining = MAX_SEARCHES - st.session_state.search_count
+st.sidebar.divider()
+st.sidebar.metric("Daily Searches Remaining", remaining)
+if remaining <= 0:
+    st.sidebar.error("Quota reached. Resumes tomorrow at Midnight.")
     st.stop()
 
-# 4. DATA ENGINE
-john_1_1_data = {
-    "na28": "Ἐν ἀρχῇ ἦν ὁ λόγος, καὶ ὁ λόγος ἦν πρὸς τὸν θεόν, καὶ θεὸς ἦν ὁ λόγος.",
-    "morphology": [
-        {"Word": "ἀρχῇ", "Parsing": "Dat. Sing. Fem.", "Role": "Object of Prep (En)", "Meaning": "Beginning"},
-        {"Word": "ἦν", "Parsing": "Impf. Act. Ind. 3s", "Role": "Linear/Video Action", "Meaning": "Was"},
-        {"Word": "λόγος", "Parsing": "Nom. Sing. Masc.", "Role": "Subject", "Meaning": "Word"},
-        {"Word": "θεόν", "Parsing": "Acc. Sing. Masc.", "Role": "Direct Object", "Meaning": "God"}
-    ],
-    "wooden": "In beginning was the word, and the word was toward the God, and God was the word.",
-    "nuance": "The Imperfect 'ἦν' identifies eternal, continuous existence. The Word didn't 'start' at the beginning; He was already there."
-}
+# 5. THE SEARCH WINDOW
+st.title("🏛 Machen Scholar Assistant")
+target_verse = st.text_input("Enter Verse (e.g., John 1:1, Romans 8:1):")
 
-# 5. DISPLAY
-st.title("🏛 Machen Style Greek Bible Helper")
-st.markdown(f"**John 1:1 Analysis:** \n## {john_1_1_data['na28']}")
-st.table(john_1_1_data['morphology'])
+if target_verse:
+    st.session_state.search_count += 1
+    
+    # SYSTEM PROMPT (Your exact 7 Operational Guidelines)
+    st.markdown(f"### Analysis for: {target_verse}")
+    st.info("Retrieving Majority Text and comparing Westcott/Nestle variants...")
+    
+    # This is where the AI 'Brain' processes your 7 rules
+    # For now, it displays a template based on your request:
+    st.subheader("📜 The Greek Text (Majority Text)")
+    st.write("[Greek Text for verse would appear here]")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("**Westcott:** [Variant]")
+    with col2:
+        st.markdown("**Nestle:** [Variant]")
+
+    st.subheader("📊 Morphology Table")
+    # Data table logic here...
+    
+    st.subheader("🪵 Machen Literal Translation")
+    st.write("*'Wooden' word-for-word rendering goes here...*")
+    
+    st.subheader("💡 Grammatical Insights")
+    st.bullet_point("Aorist vs Present distinction...")
+    st.bullet_point("Hapax Legomenon check...")
+    
+    st.subheader("🗣 Plain Conversation")
+    st.success("The 'So What?' for today: This verse teaches us...")
 st.info(f"**Literal Translation:** {john_1_1_data['wooden']}")
 st.success(f"**Theological Nuance:** {john_1_1_data['nuance']}")

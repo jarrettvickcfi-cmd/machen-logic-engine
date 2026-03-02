@@ -26,7 +26,7 @@ if target_verse:
     else:
         try:
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-1.5-flash-latest')
+            model = genai.GenerativeModel('gemini-pro')
             
             prompt = f"""
             You are a Koine Greek scholar following J. Gresham Machen's methods.

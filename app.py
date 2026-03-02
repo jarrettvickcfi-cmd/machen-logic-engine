@@ -65,5 +65,3 @@ if target_verse:
     
     st.subheader("🗣 Plain Conversation")
     st.success("The 'So What?' for today: This verse teaches us...")
-st.info(f"**Literal Translation:** {john_1_1_data['wooden']}")
-st.success(f"**Theological Nuance:** {john_1_1_data['nuance']}")

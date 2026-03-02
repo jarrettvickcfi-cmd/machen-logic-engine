@@ -1,22 +1,9 @@
 import streamlit as st
 import google.generativeai as genai
-import requests
-
-# 1. US GEOFENCE
-def check_location():
-    try:
-        res = requests.get('https://ipapi.co/json/', timeout=5).json()
-        return res.get('country_code') == 'US'
-    except:
-        return True
 
 st.set_page_config(page_title="Machen Logic Engine", page_icon="📖")
 
-if not check_location():
-    st.error("Access Restricted: US Use Only.")
-    st.stop()
-
-# 2. SECURITY SIDEBAR
+# 1. SECURITY SIDEBAR (Your Vault)
 st.sidebar.title("🔐 Secure Access")
 password = st.sidebar.text_input("Enter Secret Word:", type="password")
 if password != "Machen1923":
@@ -27,7 +14,7 @@ st.sidebar.divider()
 st.sidebar.title("🧠 Engine Power")
 api_key = st.sidebar.text_input("Enter Gemini API Key:", type="password")
 
-# 3. MAIN INTERFACE
+# 2. MAIN INTERFACE
 st.title("🏛 Machen Scholar Assistant")
 st.caption("New Testament Greek for Beginners")
 

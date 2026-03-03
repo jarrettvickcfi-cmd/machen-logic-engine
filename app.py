@@ -9,9 +9,6 @@ password = st.sidebar.text_input("Enter Secret Word:", type="password")
 if password != "Machen1923":
     st.info("Enter password to unlock.")
     st.stop()
-
-st.sidebar.divider()
-st.sidebar.title("🧠 Engine Power")
 api_key = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=api_key)
 except Exception:

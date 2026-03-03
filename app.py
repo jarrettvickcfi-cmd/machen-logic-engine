@@ -1,36 +1,34 @@
-
-
 import streamlit as st
 import google.generativeai as genai
 
 st.set_page_config(page_title="Machen Logic Engine", page_icon="📖")
 
-# 1. SECURITY SIDEBAR (Your Vault)
+# 1. SECURITY SIDEBAR
 st.sidebar.title("🔐 Secure Access")
 password = st.sidebar.text_input("Enter Secret Word:", type="password")
 if password != "Machen1923":
     st.info("Enter password to unlock.")
     st.stop()
 
-st.sidebar.divider()
-st.sidebar.title("🧠 Engine Power")
-api_key = st.sidebar.text_input("Enter Gemini API Key:", type="password")
-
 # 2. MAIN INTERFACE
 st.title("🏛 Machen Scholar Assistant")
-st.caption("New Testament Greek for Beginners")
+st.caption("Professional Paid Tier | Gemini 2.5 Pro")
 
-target_verse = st.text_input("Enter Verse (e.g., John 3:16):")
+target_verse = st.text_input("Enter Verse (e.g., Ephesians 2:8):")
 
 if target_verse:
-    if not api_key:
-        st.warning("Please enter your API Key in the sidebar to run the analysis.")
-    else:
-        try:
-            genai.configure(api_key=api_key)
-            # THE NEW, UPDATED ENGINE
-            model = genai.GenerativeModel('gemini-2.5-flash')
+    try:
+        # We are using st.secrets.get to ensure it pulls correctly from the dashboard
+        key = st.secrets.get("GEMINI_API_KEY")
+        
+        if not key:
+            st.error("🔑 Key Not Found: Go to Streamlit Settings > Secrets and add your GEMINI_API_KEY.")
+            st.stop()
             
+        genai.configure(api_key=key)
+        model = genai.GenerativeModel('gemini-2.5-pro')
+        
+        with st.spinner("Consulting 2.5 Pro..."):
             prompt = f"""
             You are a Koine Greek scholar following J. Gresham Machen's methods.
             Analyze {target_verse} with these rules:
@@ -46,9 +44,5 @@ if target_verse:
             response = model.generate_content(prompt)
             st.markdown(response.text)
             
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-        if "429" in str(e):
-            st.error("The engine is busy. Please wait 30 seconds and try again.")
-        else:
-            st.error(f"Engine Error: {e}")
+    except Exception as e:
+        st.error(f"Engine Error: {e}")

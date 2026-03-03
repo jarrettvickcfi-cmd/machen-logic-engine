@@ -23,7 +23,7 @@ target_verse = st.text_input("Enter Verse (e.g., John 3:16):")
 
 
             # THE NEW, UPDATED ENGINE
-            model = genai.GenerativeModel('gemini-2.5-flash')
+model = genai.GenerativeModel('gemini-2.5-flash')
             
             prompt = f"""
             You are a Koine Greek scholar following J. Gresham Machen's methods.

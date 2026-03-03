@@ -36,7 +36,7 @@ if target_verse:
         genai.configure(api_key=api_key)
         
         # PRO model provides higher stability and better Greek morphology
-        model = genai.GenerativeModel('gemini-1.5-pro')
+        model = genai.GenerativeModel('gemini-2.5-pro')
         
         with st.spinner("Consulting the Majority Text..."):
             # A 2-second 'politeness' delay to protect your Paid Tier quota

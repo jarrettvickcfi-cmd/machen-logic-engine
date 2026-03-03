@@ -25,7 +25,7 @@ target_verse = st.text_input("Enter Verse (e.g., John 3:16):")
             # THE NEW, UPDATED ENGINE
 model = genai.GenerativeModel('gemini-2.5-flash')
             
-            prompt = f"""
+prompt = f"""
             You are a Koine Greek scholar following J. Gresham Machen's methods.
             Analyze {target_verse} with these rules:
             1. Use Majority Text (Byzantine).
@@ -37,8 +37,8 @@ model = genai.GenerativeModel('gemini-2.5-flash')
             7. End with 'Plain but definitive analysis' explaining the meaning today.
             """
             
-            response = model.generate_content(prompt)
-            st.markdown(response.text)
+response = model.generate_content(prompt)
+st.markdown(response.text)
             
         except Exception as e:
             st.error(f"An error occurred: {e}")

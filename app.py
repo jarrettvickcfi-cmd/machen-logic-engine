@@ -1,31 +1,25 @@
 import streamlit as st
 import google.generativeai as genai
-import requests
 
 st.set_page_config(page_title="Machen Logic Engine", page_icon="📖")
 
-# 1. THE SMART GEOFENCE (Client IP Intercept)
-def check_client_location():
-    try:
-        headers = st.context.headers
-        client_ip = headers.get("X-Forwarded-For", "")
-        if client_ip:
-            client_ip = client_ip.split(",")[0].strip()
-            res = requests.get(f'https://ipapi.co/{client_ip}/json/', timeout=5).json()
-            return res.get('country_code') == 'US'
-        return True
-    except:
-        return True
-
-if not check_client_location():
-    st.error("🛑 Access Restricted: This tool is licensed for use within the United States only.")
-    st.stop()
-
-# 2. SECURITY SIDEBAR (Just the Password!)
+# 1. SECURITY SIDEBAR (Password Only)
 st.sidebar.title("🔐 Secure Access")
 password = st.sidebar.text_input("Enter Secret Word:", type="password")
 if password != "Machen1923":
     st.info("Enter password to unlock.")
+    st.stop()
+
+# 2. SEARCH COUNTER (Per-Session)
+if 'search_count' not in st.session_state:
+    st.session_state.search_count = 50
+
+st.sidebar.divider()
+st.sidebar.title("📊 Usage")
+st.sidebar.metric(label="Searches Remaining", value=st.session_state.search_count)
+
+if st.session_state.search_count <= 0:
+    st.error("Session limit reached. Please refresh to continue.")
     st.stop()
 
 # 3. MAIN INTERFACE
@@ -36,9 +30,11 @@ target_verse = st.text_input("Enter Verse (e.g., John 3:16):")
 
 if target_verse:
     try:
-        # PULL THE KEY INVISIBLY FROM STREAMLIT SECRETS
+        # Pulls your hidden key from the Streamlit "Basement" (Secrets)
         api_key = st.secrets["GEMINI_API_KEY"]
         genai.configure(api_key=api_key)
+        
+        # Using the engine your research discovered works
         model = genai.GenerativeModel('gemini-2.5-flash')
         
         prompt = f"""
@@ -53,8 +49,10 @@ if target_verse:
         7. End with 'Plain Conversation' explaining the meaning today.
         """
         
-        response = model.generate_content(prompt)
-        st.markdown(response.text)
-        
+        with st.spinner("Consulting Majority Text..."):
+            response = model.generate_content(prompt)
+            st.markdown(response.text)
+            st.session_state.search_count -= 1
+            
     except Exception as e:
-        st.error(f"An error occurred. Make sure your Streamlit Secrets are set! Details: {e}")
+        st.error(f"Engine Error. Ensure 'GEMINI_API_KEY' is in your Streamlit Secrets! {e}")

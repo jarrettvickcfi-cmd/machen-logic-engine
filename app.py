@@ -1,3 +1,4 @@
+
 import streamlit as st
 import google.generativeai as genai
 
@@ -34,8 +35,8 @@ if target_verse:
         api_key = st.secrets["GEMINI_API_KEY"]
         genai.configure(api_key=api_key)
         
-        # Using the engine your research discovered works
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        # Use the modern engine we confirmed works
+        model = genai.GenerativeModel('gemini-2.0-flash')
         
         prompt = f"""
         You are a Koine Greek scholar following J. Gresham Machen's methods.

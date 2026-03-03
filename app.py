@@ -23,12 +23,7 @@ st.caption("New Testament Greek for Beginners")
 
 target_verse = st.text_input("Enter Verse (e.g., John 3:16):")
 
-if target_verse:
-    if not api_key:
-        st.warning("Please enter your API Key in the sidebar to run the analysis.")
-    else:
-        try:
-            genai.configure(api_key=api_key)
+
             # THE NEW, UPDATED ENGINE
             model = genai.GenerativeModel('gemini-2.5-flash')
             

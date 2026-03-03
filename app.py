@@ -1,46 +1,35 @@
+
+
 import streamlit as st
 import google.generativeai as genai
-import time
 
 st.set_page_config(page_title="Machen Logic Engine", page_icon="📖")
 
-# 1. SECURITY SIDEBAR
+# 1. SECURITY SIDEBAR (Your Vault)
 st.sidebar.title("🔐 Secure Access")
 password = st.sidebar.text_input("Enter Secret Word:", type="password")
 if password != "Machen1923":
     st.info("Enter password to unlock.")
     st.stop()
 
-# 2. USAGE TRACKER (Per-Session)
-if 'search_count' not in st.session_state:
-    st.session_state.search_count = 50
-
 st.sidebar.divider()
-st.sidebar.title("📊 Session Usage")
-st.sidebar.metric(label="Searches Remaining", value=st.session_state.search_count)
+st.sidebar.title("🧠 Engine Power")
+api_key = st.sidebar.text_input("Enter Gemini API Key:", type="password")
 
-if st.session_state.search_count <= 0:
-    st.error("Session limit reached. Please refresh to continue.")
-    st.stop()
-
-# 3. MAIN INTERFACE
+# 2. MAIN INTERFACE
 st.title("🏛 Machen Scholar Assistant")
-st.caption("Professional Paid Tier | Majority Text Analysis")
+st.caption("New Testament Greek for Beginners")
 
-target_verse = st.text_input("Enter Verse (e.g., Ephesians 2:8):")
+target_verse = st.text_input("Enter Verse (e.g., John 3:16):")
 
 if target_verse:
-    try:
-        # Pulls your hidden key from Streamlit Secrets
-        api_key = st.secrets["GEMINI_API_KEY"]
-        genai.configure(api_key=api_key)
-        
-        # PRO model provides higher stability and better Greek morphology
-        model = genai.GenerativeModel('gemini-2.5-pro')
-        
-        with st.spinner("Consulting the Majority Text..."):
-            # A 2-second 'politeness' delay to protect your Paid Tier quota
-            time.sleep(2) 
+    if not api_key:
+        st.warning("Please enter your API Key in the sidebar to run the analysis.")
+    else:
+        try:
+            genai.configure(api_key=api_key)
+            # THE NEW, UPDATED ENGINE
+            model = genai.GenerativeModel('gemini-2.5-flash')
             
             prompt = f"""
             You are a Koine Greek scholar following J. Gresham Machen's methods.
@@ -56,9 +45,9 @@ if target_verse:
             
             response = model.generate_content(prompt)
             st.markdown(response.text)
-            st.session_state.search_count -= 1
             
-    except Exception as e:
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
         if "429" in str(e):
             st.error("The engine is busy. Please wait 30 seconds and try again.")
         else:

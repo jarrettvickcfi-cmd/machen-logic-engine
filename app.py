@@ -11,8 +11,6 @@ if password != "Machen1923":
     st.stop()
 api_key = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=api_key)
-
-    st.stop()# 2. MAIN INTERFACE
 st.title("🏛 Machen Scholar Assistant")
 st.caption("New Testament Greek for Beginners")
 

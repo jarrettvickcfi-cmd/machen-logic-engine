@@ -3,32 +3,42 @@ import google.generativeai as genai
 
 st.set_page_config(page_title="Machen Logic Engine", page_icon="📖")
 
-# 1. SECURITY SIDEBAR
+# 🏛 GATE 1: THE PASSWORD
 st.sidebar.title("🔐 Secure Access")
 password = st.sidebar.text_input("Enter Secret Word:", type="password")
+
 if password != "Machen1923":
-    st.info("Enter password to unlock.")
+    st.info("Enter password to unlock the engine.")
+    st.stop()  # Everything below this line is frozen until the password is correct
+
+# 🏛 GATE 2: THE KEY (Following your logic)
+# Now that they are in, we immediately grab the secret key from the basement
+try:
+    api_key = st.secrets["GEMINI_API_KEY"]
+    genai.configure(api_key=api_key)
+except Exception:
+    st.error("🔑 Key Error: Check your Streamlit Secrets for 'GEMINI_API_KEY'.")
     st.stop()
 
-# 2. MAIN INTERFACE
+# 📊 TRACKING: SESSION LIMITS
+if 'search_count' not in st.session_state:
+    st.session_state.search_count = 50
+
+st.sidebar.divider()
+st.sidebar.metric(label="Searches Remaining", value=st.session_state.search_count)
+
+# 🏛 MAIN INTERFACE
 st.title("🏛 Machen Scholar Assistant")
 st.caption("Professional Paid Tier | Gemini 2.5 Pro")
 
-target_verse = st.text_input("Enter Verse (e.g., Ephesians 2:8):")
+target_verse = st.text_input("Enter Verse (e.g., Romans 12:2):")
 
-if target_verse:
+if target_verse and st.session_state.search_count > 0:
     try:
-        # We are using st.secrets.get to ensure it pulls correctly from the dashboard
-        key = st.secrets.get("GEMINI_API_KEY")
-        
-        if not key:
-            st.error("🔑 Key Not Found: Go to Streamlit Settings > Secrets and add your GEMINI_API_KEY.")
-            st.stop()
-            
-        genai.configure(api_key=key)
+        # PULLING THE ENGINE
         model = genai.GenerativeModel('gemini-2.5-pro')
         
-        with st.spinner("Consulting 2.5 Pro..."):
+        with st.spinner("Executing 2.5 Pro Analysis..."):
             prompt = f"""
             You are a Koine Greek scholar following J. Gresham Machen's methods.
             Analyze {target_verse} with these rules:
@@ -43,6 +53,7 @@ if target_verse:
             
             response = model.generate_content(prompt)
             st.markdown(response.text)
+            st.session_state.search_count -= 1
             
     except Exception as e:
-        st.error(f"Engine Error: {e}")
+        st.error(f"Engine Response: {e}")

@@ -1,3 +1,4 @@
+
 import streamlit as st
 import google.generativeai as genai
 
@@ -9,8 +10,14 @@ password = st.sidebar.text_input("Enter Secret Word:", type="password")
 if password != "Machen1923":
     st.info("Enter password to unlock.")
     st.stop()
+
+st.sidebar.divider()
+st.sidebar.title("🧠 Engine Power")
 api_key = st.secrets["GEMINI_API_KEY"]
-genai.configure(api_key=api_key)
+    genai.configure(api_key=api_key)
+except Exception:
+    st.error("🔑 Key Error: Check your Streamlit Secrets for 'GEMINI_API_KEY'.")
+    st.stop()# 2. MAIN INTERFACE
 st.title("🏛 Machen Scholar Assistant")
 st.caption("New Testament Greek for Beginners")
 
@@ -32,9 +39,9 @@ if target_verse:
             2. Compare with Westcott & Hort and Nestle readings.
             3. Provide full Morphology (Case, Number, Gender / Tense, Voice, Mood).
             4. Identify any Hapax Legomenon.
-            5. Provide a "Machen Literal Translation" (wooden but accurate).
+            5. Provide a "Machen Literal Translation" (wooden but accurate to what was meant at the time of the early Koine' language).
             6. Explain Aorist vs Present actions.
-            7. End with 'Plain Conversation' explaining the meaning today.
+            7. End with 'Plain but definitive analysis' explaining the meaning today.
             """
             
             response = model.generate_content(prompt)

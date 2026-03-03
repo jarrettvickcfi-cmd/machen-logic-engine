@@ -10,7 +10,7 @@ if password != "Machen1923":
     st.info("Enter password to unlock.")
     st.stop()
 api_key = st.secrets["GEMINI_API_KEY"]
-    genai.configure(api_key=api_key)
+genai.configure(api_key=api_key)
 except Exception:
     st.error("🔑 Key Error: Check your Streamlit Secrets for 'GEMINI_API_KEY'.")
     st.stop()# 2. MAIN INTERFACE
